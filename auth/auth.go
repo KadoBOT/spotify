@@ -165,23 +165,23 @@ func (a Authenticator) AuthURL(state string, opts ...oauth2.AuthCodeOption) stri
 }
 
 type Query struct {
-	error, code, state string
+	Error, Code, State string
 }
 
 // Token pulls an authorization code from an HTTP request and attempts to exchange
 // it for an access token.  The standard use case is to call Token from the handler
 // that handles requests to your application's redirect URL.
 func (a Authenticator) Token(ctx context.Context, state string, r Query, opts ...oauth2.AuthCodeOption) (*oauth2.Token, error) {
-	if r.error != "" {
-		return nil, errors.New("spotify: auth failed - " + r.error)
+	if r.Error != "" {
+		return nil, errors.New("spotify: auth failed - " + r.Error)
 	}
-	if r.code == "" {
+	if r.Code == "" {
 		return nil, errors.New("spotify: didn't get access code")
 	}
-	if r.state != state {
+	if r.State != state {
 		return nil, errors.New("spotify: redirect state parameter doesn't match")
 	}
-	return a.config.Exchange(contextWithHTTPClient(ctx), r.code, opts...)
+	return a.config.Exchange(contextWithHTTPClient(ctx), r.Code, opts...)
 }
 
 // Exchange is like Token, except it allows you to manually specify the access
